@@ -52,6 +52,7 @@ add_custom_target(test
 
 # Default/All target
 add_executable(${PROJECT_NAME} ${SRC_FILES})
+add_dependencies(${PROJECT_NAME} format)
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCL_DIR})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
