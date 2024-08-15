@@ -1,6 +1,11 @@
 # BMtoPNG Related
 BMtoPNG
 build/*
+*.BM
+*.bm
+*.PAL
+*.pal
+*.png
 
 # Prerequisites
 *.d
