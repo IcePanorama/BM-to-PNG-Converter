@@ -1,3 +1,7 @@
+# BMtoPNG Related
+BMtoPNG
+build/*
+
 # Prerequisites
 *.d
 
