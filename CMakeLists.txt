@@ -26,9 +26,7 @@ set(CODE_STYLE GNU)
 
 set(INCL_DIR "${PROJECT_SOURCE_DIR}/include")
 set(LIB_DIR "${PROJECT_SOURCE_DIR}/lib")
-set(LIBS
-    "${LIB_DIR}/libraylib.a"
-)
+set(RAYLIB_LIB "${LIB_DIR}/libraylib.a")
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(SRC_FILES
@@ -54,7 +52,7 @@ add_custom_target(test
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 add_dependencies(${PROJECT_NAME} format)
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCL_DIR})
-target_link_libraries(${PROJECT_NAME} ${LIBS})
+target_link_libraries(${PROJECT_NAME} ${RAYLIB_LIB} -lm -lGL)
 
 # `full` target
 add_custom_target(full
