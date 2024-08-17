@@ -31,7 +31,13 @@ set(BIN_DIR "${PROJECT_SOURCE_DIR}/bin")
 set(HEADER_CPY_DIR "${BIN_DIR}/include/${PROJECT_NAME}")
 
 set(INCL_DIR "${PROJECT_SOURCE_DIR}/include")
+set(WIN32_INCL_DIR "${PROJECT_SOURCE_DIR}/include/win32")
+set(WIN64_INCL_DIR "${PROJECT_SOURCE_DIR}/include/win64")
+set(INCL_FILE "${INCL_DIR}/bm_to_png_converter.h")
+
 set(LIB_DIR "${PROJECT_SOURCE_DIR}/lib")
+set(WIN32_LIB_DIR "${PROJECT_SOURCE_DIR}/lib/win32")
+set(WIN64_LIB_DIR "${PROJECT_SOURCE_DIR}/lib/win64")
 set(RAYLIB_LIB "${LIB_DIR}/libraylib.a")
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
@@ -48,11 +54,10 @@ add_custom_target(format
 )
 
 # Copy target
-file(MAKE_DIRECTORY ${BIN_DIR})
-file(MAKE_DIRECTORY ${HEADER_CPY_DIR})
 add_custom_target(copy
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${INCL_DIR} ${HEADER_CPY_DIR}
-    COMMENT "Copying header files to ${HEADER_CPY_DIR}."
+    COMMAND ${CMAKE_COMMAND} -E copy ${INCL_FILE} ${WIN32_INCL_DIR}
+    COMMAND ${CMAKE_COMMAND} -E copy ${INCL_FILE} ${WIN64_INCL_DIR}
+    COMMENT "Copying ${INCL_FILE} to win32 and win64 include directories."
 )
 
 # Default/All target
@@ -60,18 +65,22 @@ add_executable(${PROJECT_NAME} ${SRC_FILES})
 add_dependencies(${PROJECT_NAME} format)
 add_dependencies(${PROJECT_NAME} copy)
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCL_DIR})
-target_link_libraries(${PROJECT_NAME} ${RAYLIB_LIB} -lm -lGL)
+target_link_libraries(${PROJECT_NAME} -lraylib -lm -lGL)
 
+# i686-w64-mingw32-gcc -std=c99 -Wpedantic -Wextra -Werror -Wall
+# -Wstrict-aliasing=3 -Wwrite-strings -Wvla -Wcast-align=strict
+# -Wstrict-prototypes -Wstringop-overflow=4 -Wshadow -fanalyzer -o test.exe
+# src/*.c -I./include/win32 -L./lib/win32 -lraylib -lopengl32 -lgdi32 -lwinmm
 # Win32 target
 add_custom_target(win32
-    COMMAND ${WIN32_CC} ${CMAKE_C_FLAGS} -o "${PROJECT_NAME}_i686.exe" "${SRC_DIR}/*.c" -I${INCL_DIR}
+    COMMAND ${WIN32_CC} ${CMAKE_C_FLAGS} -o "${PROJECT_NAME}_i686.exe" "${SRC_DIR}/*.c" -I${WIN32_INCL_DIR} -L${WIN32_LIB_DIR} -lraylib -lopengl32 -lgdi32 -lwinmm
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMENT "Building 32-bit executable."
 )
 
 # Win64 target
 add_custom_target(win64
-    COMMAND ${WIN64_CC} ${CMAKE_C_FLAGS} -o "${PROJECT_NAME}_x86_64.exe" "${SRC_DIR}/*.c" -I${INCL_DIR}
+    COMMAND ${WIN64_CC} ${CMAKE_C_FLAGS} -o "${PROJECT_NAME}_x86_64.exe" "${SRC_DIR}/*.c" -I${WIN64_INCL_DIR} -L${WIN64_LIB_DIR} -lraylib -lopengl32 -lgdi32 -lwinmm
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     COMMENT "Building 64-bit executable."
 )
