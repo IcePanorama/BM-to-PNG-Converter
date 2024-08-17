@@ -60,16 +60,16 @@ void
 validate_user_input (const char *bm_file, const char *palette_file)
 {
   size_t bm_len = strlen (bm_file);
-  if (strcmp (bm_file + (bm_len - 2), "BM") != 0
-      && strcmp (bm_file + (bm_len - 2), "bm") != 0)
+  if (strcmp (bm_file + (bm_len - 3), ".BM") != 0
+      && strcmp (bm_file + (bm_len - 3), ".bm") != 0)
     {
       fprintf (stderr, "Error: %s is not a BM file.\n", bm_file);
       handle_improper_usage_error ();
     }
 
   size_t pal_len = strlen (palette_file);
-  if (strcmp (palette_file + (pal_len - 3), "PAL") != 0
-      && strcmp (palette_file + (pal_len - 3), "pal") != 0)
+  if (strcmp (palette_file + (pal_len - 4), ".PAL") != 0
+      && strcmp (palette_file + (pal_len - 4), ".pal") != 0)
     {
       fprintf (stderr, "Error: %s is not a PAL file.\n", palette_file);
       handle_improper_usage_error ();
