@@ -1,5 +1,6 @@
-#include "bm_to_png.h"
+#include "bm_to_png_converter.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
