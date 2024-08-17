@@ -5,6 +5,9 @@ project(BMtoPNG C)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+set(WIN32_CC i686-w64-mingw32-gcc)
+set(WIN64_CC x86_64-w64-mingw32-gcc)
+
 add_compile_options(
     -std=c99
     -Wpedantic
@@ -24,6 +27,9 @@ add_compile_options(
 set(AUTO_FMT clang-format)
 set(CODE_STYLE GNU)
 
+set(BIN_DIR "${PROJECT_SOURCE_DIR}/bin")
+set(HEADER_CPY_DIR "${BIN_DIR}/include/${PROJECT_NAME}")
+
 set(INCL_DIR "${PROJECT_SOURCE_DIR}/include")
 set(LIB_DIR "${PROJECT_SOURCE_DIR}/lib")
 set(RAYLIB_LIB "${LIB_DIR}/libraylib.a")
@@ -41,23 +47,51 @@ add_custom_target(format
     COMMENT "Auto-formatting code."
 )
 
-# Test target
-add_custom_target(test
-    COMMAND valgrind --leak-check=yes ./${PROJECT_NAME} ${PROJECT_SOURCE_DIR}/dat-files/HARVEST.DAT
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Testing for memory leaks with Valgrind."
+# Copy target
+file(MAKE_DIRECTORY ${BIN_DIR})
+file(MAKE_DIRECTORY ${HEADER_CPY_DIR})
+add_custom_target(copy
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${INCL_DIR} ${HEADER_CPY_DIR}
+    COMMENT "Copying header files to ${HEADER_CPY_DIR}."
 )
 
 # Default/All target
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 add_dependencies(${PROJECT_NAME} format)
+add_dependencies(${PROJECT_NAME} copy)
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCL_DIR})
 target_link_libraries(${PROJECT_NAME} ${RAYLIB_LIB} -lm -lGL)
 
-# `full` target
-add_custom_target(full
+# Win32 target
+add_custom_target(win32
+    COMMAND ${WIN32_CC} ${CMAKE_C_FLAGS} -o "${PROJECT_NAME}_i686.exe" "${SRC_DIR}/*.c" -I${INCL_DIR}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Building 32-bit executable."
+)
+
+# Win64 target
+add_custom_target(win64
+    COMMAND ${WIN64_CC} ${CMAKE_C_FLAGS} -o "${PROJECT_NAME}_x86_64.exe" "${SRC_DIR}/*.c" -I${INCL_DIR}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Building 64-bit executable."
+)
+
+# Release target
+add_custom_target(release
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME}
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target test
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target win32
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target win64
     COMMENT "Running full build (clean, format, build, and test)."
+)
+
+# Clean target
+set(extra_files_to_clean
+    "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}_i686.exe"
+    "${PROJECT_SOURCE_DIR}/${PROJECT_NAME}_x86_64.exe"
+)
+set_property(
+	TARGET ${PROJECT_NAME}
+	APPEND
+	PROPERTY ADDITIONAL_CLEAN_FILES ${extra_files_to_clean}
 )
