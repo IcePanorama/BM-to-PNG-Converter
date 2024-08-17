@@ -11,6 +11,8 @@ uint32_t read_uint32_from_file (FILE *fptr);
 Color get_color_from_byte (FILE *palette, uint8_t b);
 void handle_improper_usage_error (void);
 void validate_user_input (const char *bm_file, const char *palette_file);
+int8_t convert_bm_file_to_png (FILE *bm_file, FILE *pal_file,
+                               const char *output_filename);
 
 int
 main (int argc, char **argv)
@@ -26,38 +28,10 @@ main (int argc, char **argv)
   FILE *bm_file = load_file (bm_filename);
   FILE *palette = load_file (palette_filename);
 
-  uint32_t width = read_uint32_from_file (bm_file);
-  uint32_t height = read_uint32_from_file (bm_file);
+  convert_bm_file_to_png (bm_file, palette, "output.png");
 
-  // purposely swapping the width & height here
-  // this is necessarily for whatever reason
-  Image image = GenImageColor (height, width, RAYWHITE);
-
-  fseek (bm_file, 0xC, SEEK_SET);
-  for (int x = 0; x < image.width; x++)
-    {
-      for (int y = 0; y < image.height; y++)
-        {
-          uint8_t byte;
-          size_t bytes_read = fread (&byte, sizeof (uint8_t), 1, bm_file);
-          if (bytes_read != 1)
-            {
-              fprintf (stderr, "fread error, expected %d byte(s), got %zu.\n",
-                       1, bytes_read);
-              break;
-            }
-
-          ImageDrawPixel (&image, x, y, get_color_from_byte (palette, byte));
-        }
-    }
   fclose (bm_file);
   fclose (palette);
-
-  ImageFormat (&image, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
-  ImageFlipVertical (&image);
-  ImageRotateCW (&image);
-
-  ExportImage (image, "output.png");
 
   return 0;
 }
@@ -133,4 +107,42 @@ validate_user_input (const char *bm_file, const char *palette_file)
       fprintf (stderr, "Error: %s is not a PAL file.\n", palette_file);
       handle_improper_usage_error ();
     }
+}
+
+int8_t
+convert_bm_file_to_png (FILE *bm_file, FILE *pal_file,
+                        const char *output_filename)
+{
+  uint32_t width = read_uint32_from_file (bm_file);
+  uint32_t height = read_uint32_from_file (bm_file);
+
+  // purposely swapping the width & height here
+  // this is necessarily for whatever reason
+  Image image = GenImageColor (height, width, RAYWHITE);
+
+  fseek (bm_file, 0xC, SEEK_SET);
+  for (int x = 0; x < image.width; x++)
+    {
+      for (int y = 0; y < image.height; y++)
+        {
+          uint8_t byte;
+          size_t bytes_read = fread (&byte, sizeof (uint8_t), 1, bm_file);
+          if (bytes_read != 1)
+            {
+              fprintf (stderr, "fread error, expected %d byte(s), got %zu.\n",
+                       1, bytes_read);
+              break;
+            }
+
+          ImageDrawPixel (&image, x, y, get_color_from_byte (pal_file, byte));
+        }
+    }
+
+  ImageFormat (&image, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+  ImageFlipVertical (&image);
+  ImageRotateCW (&image);
+
+  ExportImage (image, output_filename);
+
+  return 0;
 }
