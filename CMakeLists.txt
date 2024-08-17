@@ -30,7 +30,7 @@ set(RAYLIB_LIB "${LIB_DIR}/libraylib.a")
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 set(SRC_FILES
-    "${SRC_DIR}/bm_to_png.c"
+    "${SRC_DIR}/main.c"
 )
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
