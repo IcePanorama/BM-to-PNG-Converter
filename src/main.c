@@ -1,9 +1,7 @@
 #include "bm_to_png_converter.h"
 
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 static void handle_improper_usage_error (void);
 static void validate_user_input (const char *bm_file,
@@ -24,7 +22,7 @@ main (int argc, char **argv)
   FILE *bm_file = load_file (bm_filename);
   FILE *palette = load_file (palette_filename);
 
-  convert_bm_file_to_png (bm_file, palette, "output.png");
+  convert_bm_file_to_png (bm_file, palette, "output");
 
   fclose (bm_file);
   fclose (palette);
