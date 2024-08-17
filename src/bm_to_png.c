@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+FILE *load_file (const char *filename);
 uint32_t read_uint32_from_file (FILE *fptr);
 Color get_color_from_byte (FILE *palette, uint8_t b);
 
@@ -13,24 +14,14 @@ main (void)
   const char *palette_filename = "AUTOGRPH.PAL";
   const char *bm_filename = "AUTOGRPH.BM";
 
-  FILE *palette = fopen (palette_filename, "rb");
-  if (palette == NULL)
-    {
-      fprintf (stderr, "Error opening palette file, %s.\n", palette_filename);
-      return -1;
-    }
-
-  FILE *bm_file = fopen (bm_filename, "rb");
-  if (bm_file == NULL)
-    {
-      fprintf (stderr, "Error opening bm file, %s.\n", bm_filename);
-      return -1;
-    }
+  FILE *palette = load_file (palette_filename);
+  FILE *bm_file = load_file (bm_filename);
 
   uint32_t width = read_uint32_from_file (bm_file);
   uint32_t height = read_uint32_from_file (bm_file);
 
-  // purposely swapping the width & height
+  // purposely swapping the width & height here
+  // this is necessarily for whatever reason
   Image image = GenImageColor (height, width, RAYWHITE);
 
   fseek (bm_file, 0xC, SEEK_SET);
@@ -42,8 +33,8 @@ main (void)
           size_t bytes_read = fread (&byte, sizeof (uint8_t), 1, bm_file);
           if (bytes_read != 1)
             {
-              fprintf (stderr, "fread error, expected %d bytes, got %zu.\n", 1,
-                       bytes_read);
+              fprintf (stderr, "fread error, expected %d byte(s), got %zu.\n",
+                       1, bytes_read);
               break;
             }
 
@@ -60,6 +51,19 @@ main (void)
   ExportImage (image, "output.png");
 
   return 0;
+}
+
+FILE *
+load_file (const char *filename)
+{
+  FILE *fptr = fopen (filename, "rb");
+  if (fptr == NULL)
+    {
+      fprintf (stderr, "Error opening fptr file, %s.\n", filename);
+      exit (1);
+    }
+
+  return fptr;
 }
 
 uint32_t

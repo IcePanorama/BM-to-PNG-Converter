@@ -6,6 +6,7 @@ build/*
 *.PAL
 *.pal
 *.png
+.cache/*
 
 # Prerequisites
 *.d

@@ -1,0 +1,29 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-I/home/main/Dev/C/BM-to-PNG-Converter/include",
+      "-std=gnu99",
+      "-std=c99",
+      "-Wpedantic",
+      "-Wextra",
+      "-Werror",
+      "-Wall",
+      "-Wstrict-aliasing=3",
+      "-Wwrite-strings",
+      "-Wvla",
+      "-Wcast-align=strict",
+      "-Wstrict-prototypes",
+      "-Wstringop-overflow=4",
+      "-Wshadow",
+      "-fanalyzer",
+      "-c",
+      "-o",
+      "CMakeFiles/BMtoPNG.dir/src/bm_to_png.c.o",
+      "/home/main/Dev/C/BM-to-PNG-Converter/src/bm_to_png.c"
+    ],
+    "directory": "/home/main/Dev/C/BM-to-PNG-Converter/build",
+    "file": "/home/main/Dev/C/BM-to-PNG-Converter/src/bm_to_png.c",
+    "output": "/home/main/Dev/C/BM-to-PNG-Converter/build/CMakeFiles/BMtoPNG.dir/src/bm_to_png.c.o"
+  }
+]
