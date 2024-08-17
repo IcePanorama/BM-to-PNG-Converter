@@ -1,5 +1,6 @@
 #include "raylib.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,12 +8,16 @@
 FILE *load_file (const char *filename);
 uint32_t read_uint32_from_file (FILE *fptr);
 Color get_color_from_byte (FILE *palette, uint8_t b);
+void handle_improper_usage_error (void);
 
 int
-main (void)
+main (int argc, char **argv)
 {
-  const char *palette_filename = "AUTOGRPH.PAL";
-  const char *bm_filename = "AUTOGRPH.BM";
+  if (argc < 3)
+    handle_improper_usage_error ();
+
+  const char *bm_filename = argv[1];
+  const char *palette_filename = argv[2];
 
   FILE *palette = load_file (palette_filename);
   FILE *bm_file = load_file (bm_filename);
@@ -91,4 +96,17 @@ get_color_from_byte (FILE *palette, uint8_t b)
       fread (&data[i], sizeof (uint8_t), 1, palette);
     }
   return (Color){ data[0], data[1], data[2], 255 };
+}
+
+void
+handle_improper_usage_error (void)
+{
+  bool windows = false;
+#ifdef _WIN32
+  windows = true;
+#endif
+  fprintf (stderr,
+           "Improper usage.\n\ttry: %s path/to/file.BM path/to/file.PAL\n",
+           windows ? "BMtoPNG_[arch].exe" : "./BMtoPNG");
+  exit (1);
 }
