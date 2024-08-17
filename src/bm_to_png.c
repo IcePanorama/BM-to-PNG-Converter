@@ -4,23 +4,27 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 FILE *load_file (const char *filename);
 uint32_t read_uint32_from_file (FILE *fptr);
 Color get_color_from_byte (FILE *palette, uint8_t b);
 void handle_improper_usage_error (void);
+void validate_user_input (const char *bm_file, const char *palette_file);
 
 int
 main (int argc, char **argv)
 {
   if (argc < 3)
     handle_improper_usage_error ();
+  else
+    validate_user_input (argv[1], argv[2]);
 
   const char *bm_filename = argv[1];
   const char *palette_filename = argv[2];
 
-  FILE *palette = load_file (palette_filename);
   FILE *bm_file = load_file (bm_filename);
+  FILE *palette = load_file (palette_filename);
 
   uint32_t width = read_uint32_from_file (bm_file);
   uint32_t height = read_uint32_from_file (bm_file);
@@ -109,4 +113,24 @@ handle_improper_usage_error (void)
            "Improper usage.\n\ttry: %s path/to/file.BM path/to/file.PAL\n",
            windows ? "BMtoPNG_[arch].exe" : "./BMtoPNG");
   exit (1);
+}
+
+void
+validate_user_input (const char *bm_file, const char *palette_file)
+{
+  size_t bm_len = strlen (bm_file);
+  if (strcmp (bm_file + (bm_len - 2), "BM") != 0
+      && strcmp (bm_file + (bm_len - 2), "bm") != 0)
+    {
+      fprintf (stderr, "Error: %s is not a BM file.\n", bm_file);
+      handle_improper_usage_error ();
+    }
+
+  size_t pal_len = strlen (palette_file);
+  if (strcmp (palette_file + (pal_len - 3), "PAL") != 0
+      && strcmp (palette_file + (pal_len - 3), "pal") != 0)
+    {
+      fprintf (stderr, "Error: %s is not a PAL file.\n", palette_file);
+      handle_improper_usage_error ();
+    }
 }
