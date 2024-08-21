@@ -1,34 +1,34 @@
 /**
  *  BM_to_PNG_converter
  *
- *  A header-only library which converts `.bm` images to pngs using palette
+ *  A header-only library which converts bm files to images (png) using palette
  *  files.
  *
  *  The only non-static function accessible through this header is
  *  `convert_bm_file_to_png ()`. For input, it takes in two `FILE` pointers,
  *  both of which the caller is responsible for initializing and closing. The
- *  first should be a `FILE *` to some `.bm/.BM` file, while the second should
- *  be a `FILE *` to some `.pal/.PAL` file. Lastly, the final piece of input
- *  should be the desired output filename, without `.png` on the end as this
- *  function automatically adds the file extension to the end of
- *  `output_filename`.
+ *  first should be a pointer to some bm file, while the second should be a 
+ *  pointer to some pal file. The caller is also responsible for insuring that
+ *  these are, in fact, bm and pal files. Lastly, the final piece of input
+ *  should be the desired output filename. N/B: The function automatically adds
+ *  the file extension to the end of `output_filename`.
  *
- *  Additional info on how `.bm/.BM` and `.pal/.PAL` files works:
+ *  Additional info on how bm and pal files works:
  *  **BM**:
  *    For whatever reason, these files are organized in a weird fashion. The
- *    first 8 bytes of a given file correspond to its width and height,
- *    followed by 4 bytes of zeros. What follows after this is an array of
- *    bytes where each byte corresponds to a pixel in the output image. The
- *    strange part is that this array isn't organized like you might think.
- *    Rather that starting from the upper left hand, it starts from the
+ *    first 8 bytes of a given file correspond to its width and height (in
+ *    little endian), followed by 4 bytes of zeros. What follows after this is
+ *    an array of bytes where each byte corresponds to a pixel in the output
+ *    image. The strange part is that this array isn't organized like you might
+ *    think. Rather that starting from the upper left hand, it starts from the
  *    bottom left, I believe. I found this out just through trial and error,
  *    but perhaps someone more knowledgable than me knows why. My best guess
  *    is that it's maybe data protection? idk
  *  **PAL**:
- *    These files are very simple, compared to the bm files. The "index" you
- *    get from the bm file just tells you where to jump to in the palette
- *    and then you just read the next three bytes which correspond directly to
- *    that pixel's rgb values.
+ *    These files are very simple compared to the bm files. The "index" you get
+ *    from the bm file just tells you where to jump to in the palette and then
+ *    you just read the next three bytes which correspond directly to that
+ *    pixel's rgb values.
  */
 #ifndef _BM_to_PNG_converter_
 #define _BM_to_PNG_converter_
