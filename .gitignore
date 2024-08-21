@@ -8,6 +8,7 @@ build/*
 *.png
 .cache/*
 *.json
+.releases/*
 
 # Prerequisites
 *.d
