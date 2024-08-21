@@ -68,10 +68,6 @@ add_dependencies(${PROJECT_NAME} copy)
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCL_DIR})
 target_link_libraries(${PROJECT_NAME} -lraylib -lm -lGL)
 
-# i686-w64-mingw32-gcc -std=c99 -Wpedantic -Wextra -Werror -Wall
-# -Wstrict-aliasing=3 -Wwrite-strings -Wvla -Wcast-align=strict
-# -Wstrict-prototypes -Wstringop-overflow=4 -Wshadow -fanalyzer -o test.exe
-# src/*.c -I./include/win32 -L./lib/win32 -lraylib -lopengl32 -lgdi32 -lwinmm
 # Win32 target
 add_custom_target(win32
     COMMAND ${WIN32_CC} ${CMAKE_C_FLAGS} -o "${PROJECT_NAME}_i686.exe" "${SRC_DIR}/*.c" -I${WIN32_INCL_DIR} -L${WIN32_LIB_DIR} -lraylib -lopengl32 -lgdi32 -lwinmm
