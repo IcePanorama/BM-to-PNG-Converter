@@ -57,7 +57,8 @@ add_custom_target(format
 add_custom_target(copy
     COMMAND ${CMAKE_COMMAND} -E copy ${INCL_FILE} ${WIN32_INCL_DIR}
     COMMAND ${CMAKE_COMMAND} -E copy ${INCL_FILE} ${WIN64_INCL_DIR}
-    COMMENT "Copying ${INCL_FILE} to win32 and win64 include directories."
+    COMMAND ${CMAKE_COMMAND} -E copy ${INCL_FILE} ${PROJECT_SOURCE_DIR}
+    COMMENT "Copying ${INCL_FILE} to win32/win64 include directories and project root."
 )
 
 # Default/All target
