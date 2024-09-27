@@ -1,3 +1,11 @@
+# DEPRECATED
+
+Archived in favor of [BMtoBMP](https://github.com/IcePanorama/BMtoBMP), which converts BM/PAL files to bitmap images instead of PNGs.
+
+This was done primarily to remove the Raylib dependency. At the time I wrote this program, I justified using Raylib as a crutch because the project I created this tool for was going to be using it already. Almost immediately after completing this project though, I regretted the idea. Only just got some time to actually work on this.
+
+The remainder of the old README.md will remain as-is for archival purposes. Note that the [Additional info on how BM and PAL files work](#Additional-info-on-how-BM-and-PAL-files-work) section is rather inaccurate at this point. I learned a lot more about the file format as I worked on this new project. Please view BMtoBMP using the link above if you're looking for more information on these files.
+
 # BM-to-PNG-Converter
 A header-only library and command-line executable which converts BM files to images (PNGs) using PAL files.
 
